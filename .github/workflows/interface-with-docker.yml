@@ -27,3 +27,5 @@ jobs:
         run: docker logs ${{ job.services.db.id }}
       - name: inspect service container
         run: docker inspect ${{ job.services.db.id }}
+      - name: run inside service container
+        run: docker exec ${{ job.services.backend.id }} echo "Hello world"
