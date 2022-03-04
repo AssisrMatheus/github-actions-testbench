@@ -1,0 +1,27 @@
+name: interface-with-docker
+on:
+  # Allow this workflow to be triggered via a button
+  workflow_dispatch:
+
+jobs:
+  interface-with-docker:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node14.15.0-chrome96-ff94
+    services:
+      db:
+        image: mysql
+      ports:
+        - 3306:3306
+    steps:
+      - uses: actions/checkout@v2
+      - name: install Docker client
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get -y install --no-install-recommends docker.io
+      # - name: run service container
+      #   run: docker run --rm --detach --network ${{ job.container.network }} --name apache2 httpd:alpine
+      - name: show running containers
+        run: docker ps
+      - name: inspect service container
+        run: docker inspect ${{ job.services.db.id }}
