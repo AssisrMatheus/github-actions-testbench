@@ -23,5 +23,7 @@ jobs:
         run: docker run --rm --detach --network ${{ job.container.network }} --name db mysql
       - name: show running containers
         run: docker ps
+      - name: show logs
+        run: docker logs ${{ job.services.db.id }}
       - name: inspect service container
         run: docker inspect ${{ job.services.db.id }}
