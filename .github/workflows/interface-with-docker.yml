@@ -31,3 +31,6 @@ jobs:
         run: docker inspect ${{ job.services.db.id }}
       - name: run inside service container
         run: docker exec ${{ job.services.db.id }} echo "Hello world"
+      - name: stop apache2 container
+        if: always()
+        run: docker stop mysql
