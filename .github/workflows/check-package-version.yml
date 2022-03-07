@@ -33,12 +33,12 @@ jobs:
             core.setOutput('currentVersion', currentVersion)
             core.setOutput('previousVersion', previousVersion)
 
-            const semver = require('semver')
-            const currentSemver = semver.parse(currentVersion)
             if (!previousVersion) {
               core.setOutput('matches', false)
               core.setOutput('isNewer', true)
             } else {
+              const semver = require('semver')
+              const currentSemver = semver.parse(currentVersion)
               const previousSemver = semver.parse(previousVersion)
               core.setOutput('matches', semver.eq(currentSemver.version, previousSemver.version))
               core.setOutput('isNewer', semver.gt(currentSemver.version, previousSemver.version))
@@ -54,7 +54,7 @@ jobs:
         run: echo "${{steps.npm-version.outputs.isNewer}}"
 
       - name: A/B Check
-        if: ${{ steps.npm-version.outputs.isNewer == "false" }}
+        if: ${{ steps.npm-version.outputs.isNewer == 'false' }}
         uses: actions/github-script@v6
         with:
           script: |
