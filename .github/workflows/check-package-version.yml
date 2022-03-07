@@ -8,7 +8,7 @@ jobs:
     steps:
       - run: npm install semver
       - uses: actions/github-script@v6
-        name: Npm version
+        name: Setup npm version outputs
         id: npm-version
         with:
           script: |
@@ -45,17 +45,9 @@ jobs:
               core.setOutput('diff', semver.diff(currentSemver.version, previousSemver.version))
             }
 
-      - name: View context attributes
-        uses: actions/github-script@v6
-        with:
-          script: console.log(context)
-
-      - name: Get result
-        run: echo "${{steps.npm-version.outputs.isNewer}}"
-
       - name: Fail if not new or skip otherwise
         if: ${{ steps.npm-version.outputs.isNewer != 'true' }}
         uses: actions/github-script@v6
         with:
           script: |
-            core.setFailed('Npm version is not newer')
+            core.setFailed('package.json version number has not been updated')
