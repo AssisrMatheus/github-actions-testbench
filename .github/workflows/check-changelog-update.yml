@@ -5,14 +5,6 @@ on:
 jobs:
   check-changelog-update:
     runs-on: ubuntu-latest
-    steps:
-      - name: View context attributes
-        uses: actions/github-script@v6
-        with:
-          script: console.log(context)
-
-      - run: npm install parse-diff
-      - name: Has changelog changed
-        uses: ./.github/workflows/has-file-changed.yml
-        with:
-          filePath: CHANGELOG.md
+    uses: ./.github/workflows/has-file-changed.yml
+    with:
+      filePath: CHANGELOG.md
