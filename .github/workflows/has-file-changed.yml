@@ -19,9 +19,29 @@ jobs:
             const diff = await github.request(diff_url)
 
             const parse = require('parse-diff')
-            const files = parse(diff.data)
+            const files = (parse(diff.data || '') || [])
 
             const filePath = '${{ inputs.filePath }}'
-
             const fileDiff = files.filter(x => x.to === filePath)
-            console.log(fileDiff)
+
+            if (fileDiff.length > 0) {
+              const file = fileDiff[0]
+              core.setOutput('justBeenCreated', file.new)
+              core.setOutput('hasBeenUpdated', true)
+            } else {
+              core.setOutput('justBeenCreated', false)
+              core.setOutput('hasBeenUpdated', false)
+            }
+
+      - name: Just been created
+        run: echo "${{steps.set-result.outputs.justBeenCreated}}"
+
+      - name: Just been created
+        run: echo "${{steps.set-result.outputs.hasBeenUpdated}}"
+
+      - name: Fail if not new or skip otherwise
+        if: ${{ steps.npm-version.outputs.hasBeenUpdated != 'true' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.setFailed('"${{ inputs.filePath }}" has not been updated')
