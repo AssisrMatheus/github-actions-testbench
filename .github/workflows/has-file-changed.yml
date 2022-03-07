@@ -18,10 +18,10 @@ jobs:
             const diff_url = context.payload.pull_request.diff_url
             const diff = await github.request(diff_url)
 
-            const parse = require('parse-diff');
-            const files = parse(diff.data);
+            const parse = require('parse-diff')
+            const files = parse(diff.data)
 
-            const filePath = core.getInput('filePath', { required: true });
+            const filePath = '${{ inputs.browser }}'
 
             const fileDiff = files.filter(x => x.to === filePath)
             console.log(fileDiff)
