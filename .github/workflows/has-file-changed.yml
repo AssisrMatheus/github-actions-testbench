@@ -21,7 +21,7 @@ jobs:
             const parse = require('parse-diff')
             const files = parse(diff.data)
 
-            const filePath = '${{ inputs.browser }}'
+            const filePath = '${{ inputs.filePath }}'
 
             const fileDiff = files.filter(x => x.to === filePath)
             console.log(fileDiff)
