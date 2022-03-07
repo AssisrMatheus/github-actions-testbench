@@ -54,7 +54,7 @@ jobs:
         run: echo "${{steps.npm-version.outputs.isNewer}}"
 
       - name: Fail if not new
-        if: ${{ steps.npm-version.outputs.isNewer == 'false' }}
+        if: ${{ steps.npm-version.outputs.isNewer != 'true' }}
         uses: actions/github-script@v6
         with:
           script: |
