@@ -44,12 +44,14 @@ jobs:
               core.setOutput('diff', semver.diff(currentSemver.version, previousSemver.version))
             }
 
-      - name: Get result
-        run: echo "${{ steps.npm-version.outputs }}"
+      - name: View context attributes
+        uses: actions/github-script@v6
+        with:
+          script: console.log(context)
 
       - name: A/B Check
-        if: ${{ !steps.npm-version.outputs.isNewer }}
-        uses: actions/github-script@v3
+        if: ${{ steps.npm-version.outputs.isNewer !== true }}
+        uses: actions/github-script@v6
         with:
           script: |
             core.setFailed('Npm version is not newer')
