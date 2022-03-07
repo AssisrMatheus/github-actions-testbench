@@ -18,7 +18,7 @@ jobs:
           script: |
             const diff_url = context.payload.pull_request.diff_url
             const diff = await github.request(diff_url)
-            console.log(diff)
+            console.log(diff.data)
 
             var parse = require('parse-diff');
             var files = parse(diff);
