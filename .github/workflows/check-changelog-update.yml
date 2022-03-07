@@ -10,10 +10,16 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: console.log(context)
+
+      - run: npm install semver
       - uses: actions/github-script@v6
         name: Log diff result
         with:
           script: |
             const diff_url = context.payload.pull_request.diff_url
-            const result = await github.request(diff_url)
-            console.log(result)
+            const diff = await github.request(diff_url)
+            console.log(diff)
+
+            var parse = require('parse-diff');
+            var files = parse(diff);
+            console.log(JSON.stringify(files, null, 2))
