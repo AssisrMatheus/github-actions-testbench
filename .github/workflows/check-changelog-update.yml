@@ -19,7 +19,7 @@ jobs:
         run: echo '${{ toJSON(strategy) }}'
       - name: Dump matrix context
         run: echo '${{ toJSON(matrix) }}'
-      backend-docker-image-tag: ${{ (github.base_ref == 'main' || github.base_ref == 'staging') && (github.base_ref == 'staging' && github.base_ref || 'latest') || 'dev' }}
+      - run: echo "${{ (github.base_ref == 'main' || github.base_ref == 'staging') && (github.base_ref == 'staging' && github.base_ref || 'latest') || 'dev' }}"
   check-changelog-update:
     uses: ./.github/workflows/has-file-changed.yml
     with:
