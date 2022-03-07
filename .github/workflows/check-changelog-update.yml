@@ -11,7 +11,7 @@ jobs:
         with:
           script: console.log(context)
 
-      - run: npm install semver
+      - run: npm install parse-diff
       - uses: actions/github-script@v6
         name: Log diff result
         with:
