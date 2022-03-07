@@ -41,7 +41,7 @@ jobs:
         run: echo "${{steps.diff-result.outputs.hasBeenUpdated}}"
 
       - name: Fail if not new or skip otherwise
-        if: ${{ steps.npm-version.outputs.hasBeenUpdated != 'true' }}
+        if: ${{ steps.diff-result.outputs.hasBeenUpdated != 'true' }}
         uses: actions/github-script@v6
         with:
           script: |
