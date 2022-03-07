@@ -53,7 +53,7 @@ jobs:
       - name: Get result
         run: echo "${{steps.npm-version.outputs.isNewer}}"
 
-      - name: A/B Check
+      - name: Fail if not new
         if: ${{ steps.npm-version.outputs.isNewer == 'false' }}
         uses: actions/github-script@v6
         with:
