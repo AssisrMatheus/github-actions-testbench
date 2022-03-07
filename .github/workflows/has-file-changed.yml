@@ -12,7 +12,7 @@ jobs:
     steps:
       - run: npm install parse-diff
       - uses: actions/github-script@v6
-        name: Log diff result
+        name: Compare file diff
         id: diff-result
         with:
           script: |
@@ -33,12 +33,6 @@ jobs:
               core.setOutput('justBeenCreated', false)
               core.setOutput('hasBeenUpdated', false)
             }
-
-      - name: Just been created
-        run: echo "${{steps.diff-result.outputs.justBeenCreated}}"
-
-      - name: Has been updated
-        run: echo "${{steps.diff-result.outputs.hasBeenUpdated}}"
 
       - name: Fail if not new or skip otherwise
         if: ${{ steps.diff-result.outputs.hasBeenUpdated != 'true' }}
