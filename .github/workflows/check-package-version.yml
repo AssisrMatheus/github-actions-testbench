@@ -9,6 +9,7 @@ jobs:
       - run: npm install semver
       - uses: actions/github-script@v6
         name: Npm version
+        id: npm-version
         with:
           script: |
             const getPackageVersion = async (ref) => {
@@ -42,3 +43,13 @@ jobs:
               core.setOutput('isNewer', semver.gt(currentSemver.version, previousSemver.version))
               core.setOutput('diff', semver.diff(currentSemver.version, previousSemver.version))
             }
+
+      - name: Get result
+        run: echo "${{ steps.npm-version.outputs }}"
+
+      - name: A/B Check
+        if: ${{ !steps.npm-version.outputs.isNewer }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Npm version is not newer')
