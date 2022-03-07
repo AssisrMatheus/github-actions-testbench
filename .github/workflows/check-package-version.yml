@@ -13,3 +13,31 @@ jobs:
             const diff_url = context.payload.pull_request.diff_url
             const result = await github.request(diff_url)
             console.log(result)
+
+      - run: npm install semver
+      - uses: actions/github-script@v6
+        name: Npm version
+        with:
+          script: |
+            const getPackageVersion = async (ref) => {
+              if (!ref) return undefined
+              const data = (await octokit.rest.repos.getContent({ ...context.repo, 'package.json', ref })).data.content
+              return JSON.parse(Buffer.from(data, 'base64').toString()).version
+            }
+
+            const currentRef = context.sha
+            const previousRef = ((await octokit.rest.repos.getCommit({...context.repo, ref: currentRef })).data.parents[0] || {}).sha
+
+            const currentVersion = await getPackageVersion(currentRef)
+            const previousVersion = await getPackageVersion(previousRef)
+
+            core.setOutput('currentVersion', currentVersion)
+            core.setOutput('previousVersion', previousVersion)
+
+            const semver = require('semver')
+            const currentSemver = semver.parse(currentVersion)
+            const previousSemver = semver.parse(previousVersion)
+
+            core.setOutput('matches', semver.eq(currentSemver.version, previousSemver.version))
+            core.setOutput('isNewer', semver.gt(currentSemver.version, previousSemver.version))
+            core.setOutput('diff', semver.diff(currentSemver.version, previousSemver.version))
