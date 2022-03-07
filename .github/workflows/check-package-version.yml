@@ -3,30 +3,29 @@ on:
   pull_request:
 
 jobs:
-  interface-with-docker:
+  check-package-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
-        name: Log diff result
-        with:
-          script: |
-            const diff_url = context.payload.pull_request.diff_url
-            const result = await github.request(diff_url)
-            console.log(result)
-
       - run: npm install semver
       - uses: actions/github-script@v6
         name: Npm version
+        id: npm-version
         with:
           script: |
             const getPackageVersion = async (ref) => {
               if (!ref) return undefined
-              const data = (await octokit.rest.repos.getContent({ ...context.repo, 'package.json', ref })).data.content
-              return JSON.parse(Buffer.from(data, 'base64').toString()).version
+              try {
+                const data = (await github.rest.repos.getContent({ ...context.repo, path: 'package.json', ref })).data.content
+                return JSON.parse(Buffer.from(data, 'base64').toString()).version
+              } catch (err) {
+                core.warning(`Could not completely get version, returning undefined. Reason: ${err}`)
+                core.debug(err);
+                return undefined
+              }
             }
 
             const currentRef = context.sha
-            const previousRef = ((await octokit.rest.repos.getCommit({...context.repo, ref: currentRef })).data.parents[0] || {}).sha
+            const previousRef = ((await github.rest.repos.getCommit({...context.repo, ref: currentRef })).data.parents[0] || {}).sha
 
             const currentVersion = await getPackageVersion(currentRef)
             const previousVersion = await getPackageVersion(previousRef)
@@ -34,10 +33,29 @@ jobs:
             core.setOutput('currentVersion', currentVersion)
             core.setOutput('previousVersion', previousVersion)
 
-            const semver = require('semver')
-            const currentSemver = semver.parse(currentVersion)
-            const previousSemver = semver.parse(previousVersion)
+            if (!previousVersion) {
+              core.setOutput('matches', false)
+              core.setOutput('isNewer', true)
+            } else {
+              const semver = require('semver')
+              const currentSemver = semver.parse(currentVersion)
+              const previousSemver = semver.parse(previousVersion)
+              core.setOutput('matches', semver.eq(currentSemver.version, previousSemver.version))
+              core.setOutput('isNewer', semver.gt(currentSemver.version, previousSemver.version))
+              core.setOutput('diff', semver.diff(currentSemver.version, previousSemver.version))
+            }
 
-            core.setOutput('matches', semver.eq(currentSemver.version, previousSemver.version))
-            core.setOutput('isNewer', semver.gt(currentSemver.version, previousSemver.version))
-            core.setOutput('diff', semver.diff(currentSemver.version, previousSemver.version))
+      - name: View context attributes
+        uses: actions/github-script@v6
+        with:
+          script: console.log(context)
+
+      - name: Get result
+        run: echo "${{steps.npm-version.outputs.isNewer}}"
+
+      - name: Fail if not new
+        if: ${{ steps.npm-version.outputs.isNewer != 'true' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.setFailed('Npm version is not newer')
