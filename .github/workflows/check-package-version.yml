@@ -3,7 +3,7 @@ on:
   pull_request:
 
 jobs:
-  interface-with-docker:
+  check-package-version:
     runs-on: ubuntu-latest
     steps:
       - run: npm install semver
