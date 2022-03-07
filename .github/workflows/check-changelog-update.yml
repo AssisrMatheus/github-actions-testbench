@@ -4,7 +4,6 @@ on:
 
 jobs:
   check-changelog-update:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/has-file-changed.yml
     with:
       filePath: CHANGELOG.md
