@@ -6,14 +6,6 @@ jobs:
   interface-with-docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
-        name: Log diff result
-        with:
-          script: |
-            const diff_url = context.payload.pull_request.diff_url
-            const result = await github.request(diff_url)
-            console.log(result)
-
       - run: npm install semver
       - uses: actions/github-script@v6
         name: Npm version
@@ -21,7 +13,7 @@ jobs:
           script: |
             const getPackageVersion = async (ref) => {
               if (!ref) return undefined
-              const data = (await octokit.rest.repos.getContent({ ...context.repo, 'package.json', ref })).data.content
+              const data = (await octokit.rest.repos.getContent({ ...context.repo, path: 'package.json', ref })).data.content
               return JSON.parse(Buffer.from(data, 'base64').toString()).version
             }
 
