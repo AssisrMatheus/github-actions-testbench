@@ -19,7 +19,7 @@ jobs:
         run: echo '${{ toJSON(strategy) }}'
       - name: Dump matrix context
         run: echo '${{ toJSON(matrix) }}'
-      - run: echo "${{ (base_ref == 'master' || base_ref == 'staging') && base_ref || 'dev' }}"
+      - run: echo "${{ (github.base_ref == 'master' || github.base_ref == 'staging') && github.base_ref || 'dev' }}"
   check-changelog-update:
     uses: ./.github/workflows/has-file-changed.yml
     with:
