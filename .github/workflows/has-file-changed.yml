@@ -36,7 +36,7 @@ jobs:
       - name: Just been created
         run: echo "${{steps.set-result.outputs.justBeenCreated}}"
 
-      - name: Just been created
+      - name: Has been updated
         run: echo "${{steps.set-result.outputs.hasBeenUpdated}}"
 
       - name: Fail if not new or skip otherwise
