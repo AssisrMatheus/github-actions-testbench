@@ -13,12 +13,12 @@ jobs:
           script: |
             const getPackageVersion = async (ref) => {
               if (!ref) return undefined
-              const data = (await octokit.rest.repos.getContent({ ...context.repo, path: 'package.json', ref })).data.content
+              const data = (await github.rest.repos.getContent({ ...context.repo, path: 'package.json', ref })).data.content
               return JSON.parse(Buffer.from(data, 'base64').toString()).version
             }
 
             const currentRef = context.sha
-            const previousRef = ((await octokit.rest.repos.getCommit({...context.repo, ref: currentRef })).data.parents[0] || {}).sha
+            const previousRef = ((await github.rest.repos.getCommit({...context.repo, ref: currentRef })).data.parents[0] || {}).sha
 
             const currentVersion = await getPackageVersion(currentRef)
             const previousVersion = await getPackageVersion(previousRef)
