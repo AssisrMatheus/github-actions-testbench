@@ -1,0 +1,9 @@
+name: check-changelog-update
+on:
+  pull_request:
+
+jobs:
+  check-changelog-update:
+    uses: ./.github/workflows/has-file-changed.yml
+    with:
+      filePath: CHANGELOG.md
