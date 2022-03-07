@@ -1,0 +1,19 @@
+{
+  "name": "github-actions-testbench",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AssisrMatheus/github-actions-testbench.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AssisrMatheus/github-actions-testbench/issues"
+  },
+  "homepage": "https://github.com/AssisrMatheus/github-actions-testbench#readme"
+}
