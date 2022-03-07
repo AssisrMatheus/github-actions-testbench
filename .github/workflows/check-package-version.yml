@@ -13,8 +13,13 @@ jobs:
           script: |
             const getPackageVersion = async (ref) => {
               if (!ref) return undefined
-              const data = (await github.rest.repos.getContent({ ...context.repo, path: 'package.json', ref })).data.content
-              return JSON.parse(Buffer.from(data, 'base64').toString()).version
+              try {
+                const data = (await github.rest.repos.getContent({ ...context.repo, path: 'package.json', ref })).data.content
+                return JSON.parse(Buffer.from(data, 'base64').toString()).version
+              } catch (err) {
+                console.log("Error getting content on path", err)
+                return undefined
+              }
             }
 
             const currentRef = context.sha
