@@ -1,0 +1,15 @@
+name: check-package-version
+on:
+  pull_request:
+
+jobs:
+  interface-with-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        name: Log diff result
+        with:
+          script: |
+            const diff_url = context.payload.pull_request.diff_url
+            const result = await github.request(diff_url)
+            console.log(result)
