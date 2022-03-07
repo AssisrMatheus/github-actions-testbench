@@ -1,0 +1,27 @@
+name: has-file-changed
+on:
+  workflow_call:
+    inputs:
+      filePath:
+        required: true
+        type: string
+
+jobs:
+  check-changelog-update:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm install parse-diff
+      - uses: actions/github-script@v6
+        name: Log diff result
+        with:
+          script: |
+            const diff_url = context.payload.pull_request.diff_url
+            const diff = await github.request(diff_url)
+
+            const parse = require('parse-diff');
+            const files = parse(diff.data);
+
+            const filePath = core.getInput('filePath', { required: true });
+
+            const fileDiff = files.filter(x => x.to === filePath)
+            console.log(fileDiff)

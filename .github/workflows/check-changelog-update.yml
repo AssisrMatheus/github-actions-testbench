@@ -12,13 +12,7 @@ jobs:
           script: console.log(context)
 
       - run: npm install parse-diff
-      - uses: actions/github-script@v6
-        name: Log diff result
+      - name: Has changelog changed
+        uses: ./.github/workflows/has-file-changed.yml
         with:
-          script: |
-            const diff_url = context.payload.pull_request.diff_url
-            const diff = await github.request(diff_url)
-
-            var parse = require('parse-diff');
-            var files = parse(diff.data);
-            console.log(JSON.stringify(files, null, 2))
+          filePath: CHANGELOG.md
