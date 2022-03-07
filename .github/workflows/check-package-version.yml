@@ -51,7 +51,7 @@ jobs:
           script: console.log(context)
 
       - name: A/B Check
-        if: ${{ steps.npm-version.outputs.isNewer != true }}
+        if: ${{ steps.npm-version.outputs.isNewer != false }}
         uses: actions/github-script@v6
         with:
           script: |
