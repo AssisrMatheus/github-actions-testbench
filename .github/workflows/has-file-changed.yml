@@ -13,6 +13,7 @@ jobs:
       - run: npm install parse-diff
       - uses: actions/github-script@v6
         name: Log diff result
+        id: diff-result
         with:
           script: |
             const diff_url = context.payload.pull_request.diff_url
@@ -34,10 +35,10 @@ jobs:
             }
 
       - name: Just been created
-        run: echo "${{steps.set-result.outputs.justBeenCreated}}"
+        run: echo "${{steps.diff-result.outputs.justBeenCreated}}"
 
       - name: Has been updated
-        run: echo "${{steps.set-result.outputs.hasBeenUpdated}}"
+        run: echo "${{steps.diff-result.outputs.hasBeenUpdated}}"
 
       - name: Fail if not new or skip otherwise
         if: ${{ steps.npm-version.outputs.hasBeenUpdated != 'true' }}
